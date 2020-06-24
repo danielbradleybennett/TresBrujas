@@ -9,6 +9,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using TresBrujas.Data;
 using TresBrujas.Models;
+using TresBrujas.Models.ViewModels;
 
 namespace TresBrujas.Controllers
 {
@@ -86,13 +87,30 @@ namespace TresBrujas.Controllers
         // POST: Spells/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(SpellFormViewModel spell)
         {
             try
             {
-                // TODO: Add insert logic here
+                using(SqlConnection conn = Connection)
+                {
+                    conn.Open();
+                    using(SqlCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = @"Insert Into Spell(Name, SpellTypeId)
+                                            OUTPUT INSERTED.Id
+                                            VALUES (@Name, @SpellTypeId)";
 
-                return RedirectToAction(nameof(Index));
+                        cmd.Parameters.Add(new SqlParameter("@Name", spell.Name));
+                        cmd.Parameters.Add(new SqlParameter("@SpellTypeId", spell.SpellTypeId));
+
+                        var id = (int)cmd.ExecuteScalar();
+                        spell.SpellTypeId = id;
+
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                
+
             }
             catch
             {

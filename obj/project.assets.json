@@ -8604,11 +8604,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Daniel\\source\\repos\\Tavern2\\Tavern2\\TresBrujas.csproj",
+      "projectUniqueName": "C:\\Users\\Daniel\\source\\repos\\TresBrujas\\TresBrujas\\TresBrujas.csproj",
       "projectName": "TresBrujas",
-      "projectPath": "C:\\Users\\Daniel\\source\\repos\\Tavern2\\Tavern2\\TresBrujas.csproj",
+      "projectPath": "C:\\Users\\Daniel\\source\\repos\\TresBrujas\\TresBrujas\\TresBrujas.csproj",
       "packagesPath": "C:\\Users\\Daniel\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Daniel\\source\\repos\\Tavern2\\Tavern2\\obj\\",
+      "outputPath": "C:\\Users\\Daniel\\source\\repos\\TresBrujas\\TresBrujas\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Daniel\\AppData\\Roaming\\NuGet\\NuGet.Config",
