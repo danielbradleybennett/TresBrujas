@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using TresBrujas.Models;
+using TresBrujas.Models.ViewModels;
 
 
 namespace TresBrujas.Data
@@ -103,5 +104,7 @@ namespace TresBrujas.Data
 
 
         }
+
+        public DbSet<TresBrujas.Models.ViewModels.SpellFormViewModel> SpellFormViewModel { get; set; }
     }
 }

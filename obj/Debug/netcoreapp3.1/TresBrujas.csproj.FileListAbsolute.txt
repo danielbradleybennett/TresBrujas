@@ -321,3 +321,5 @@ C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\stati
 C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\TresBrujas.dll
 C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\TresBrujas.pdb
 C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\TresBrujas.genruntimeconfig.cache
+C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\TresBrujas.csprojAssemblyReference.cache
+C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\Razor\Views\Spells\Create.cshtml.g.cs

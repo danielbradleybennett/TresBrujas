@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using TresBrujas.Data;
@@ -81,7 +82,12 @@ namespace TresBrujas.Controllers
         // GET: Spells/Create
         public ActionResult Create()
         {
-            return View();
+            var spellTypes = GetSpellType();
+            var viewModel = new SpellFormViewModel()
+            {
+                SpellTypeOptions = spellTypes
+            };
+            return View(viewModel);
         }
 
         // POST: Spells/Create
@@ -96,15 +102,19 @@ namespace TresBrujas.Controllers
                     conn.Open();
                     using(SqlCommand cmd = conn.CreateCommand())
                     {
-                        cmd.CommandText = @"Insert Into Spell(Name, SpellTypeId)
+                        cmd.CommandText = @"INSERT INTO Spell(Name)
                                             OUTPUT INSERTED.Id
-                                            VALUES (@Name, @SpellTypeId)";
+                                            VALUES (@Name)";
 
                         cmd.Parameters.Add(new SqlParameter("@Name", spell.Name));
-                        cmd.Parameters.Add(new SqlParameter("@SpellTypeId", spell.SpellTypeId));
+                        
 
                         var id = (int)cmd.ExecuteScalar();
-                        spell.SpellTypeId = id;
+                        spell.Id = id;
+                        //if (spell.SpellTypeId != 0)
+                        //{
+                        //    UpdateSpell(spell.Id, spell.SpellTypeId);
+                        //}
 
                         return RedirectToAction(nameof(Index));
                     }
@@ -164,6 +174,57 @@ namespace TresBrujas.Controllers
             }
         }
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+
+        //Helper Method to create Spell Type dropdown
+        private List<SelectListItem> GetSpellType()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "Select Id, Type FROM SpellType";
+
+                    var reader = cmd.ExecuteReader();
+                    var options = new List<SelectListItem>();
+
+                    while (reader.Read())
+                    {
+                        var option = new SelectListItem()
+                        {
+                            Text = reader.GetString(reader.GetOrdinal("Type")),
+                            Value = reader.GetInt32(reader.GetOrdinal("Id")).ToString()
+                        };
+
+                        options.Add(option);
+                    }
+                    
+                    reader.Close();
+                    return options;
+                }
+            }
+        }
+
+        private void UpdateSpell(int spellId, int spellTypeId)
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Spell
+                                        SET SpellTypeId = @spellTypeId
+                                        WHERE Id = @id";
+
+                    cmd.Parameters.Add(new SqlParameter("@spellTypeId", spellTypeId));
+                    cmd.Parameters.Add(new SqlParameter("@id", spellId));
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
 
         private Spell GetSpellById(int id)
         {
