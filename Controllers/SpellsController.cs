@@ -93,36 +93,71 @@ namespace TresBrujas.Controllers
         // POST: Spells/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(SpellFormViewModel spell)
+        public async Task<ActionResult> Create([Bind("Id, Name")] SpellFormViewModel spellFormViewModel)
         {
             try
             {
-                using(SqlConnection conn = Connection)
+
+                var user = await GetCurrentUserAsync();
+
+                //builds up our new BlogPost using the data submitted from the form, 
+                //represented here as "BlogPos"
+                var spells = new Spell()
                 {
-                    conn.Open();
-                    using(SqlCommand cmd = conn.CreateCommand())
-                    {
-                        cmd.CommandText = @"INSERT INTO Spell(Name)
-                                            OUTPUT INSERTED.Id
-                                            VALUES (@Name)";
+                    Id = spellFormViewModel.Id,
+                    Name = spellFormViewModel.Name,
+                    
+                };
+                _context.Spell.Add(spells);
+                await _context.SaveChangesAsync();
 
-                        cmd.Parameters.Add(new SqlParameter("@Name", spell.Name));
-                        
-
-                        var id = (int)cmd.ExecuteScalar();
-                        spell.Id = id;
-                        //if (spell.SpellTypeId != 0)
-                        //{
-                        //    UpdateSpell(spell.Id, spell.SpellTypeId);
-                        //}
-
-                        return RedirectToAction(nameof(Index));
-                    }
-                }
                 
 
+                //spells.SpellType = spell.SpellTypeOptions.Select(typeId = new SpellType()
+                //{
+                //    Type = spells,
+                //    TypeId = typeId
+                //}).ToList();
+
+
+                
+                if (spellFormViewModel.SpellTypeId != 0)
+                {
+                    UpdateSpell(spellFormViewModel.Id, spellFormViewModel.SpellTypeId);
+                }
+
+
+                return RedirectToAction(nameof(Index));
+
+
+
+
+                //using(SqlConnection conn = Connection)
+                //{
+                //    conn.Open();
+                //    using(SqlCommand cmd = conn.CreateCommand())
+                //    {
+                //        cmd.CommandText = @"INSERT INTO Spell(Name)
+                //                            OUTPUT INSERTED.Id
+                //                            VALUES (@Name)";
+
+                //        cmd.Parameters.Add(new SqlParameter("@Name", spell.Name));
+
+
+                //        var Id = (int)cmd.ExecuteScalar();
+                //        spell.Id = Id;
+                //        if (spell.SpellTypeId != 0)
+                //        {
+                //            UpdateSpell(spell.Id, spell.SpellTypeId);
+                //        }
+
+                //        return RedirectToAction(nameof(Index));
+                //    }
+                //}
+
+
             }
-            catch
+            catch (Exception ex)
             {
                 return View();
             }
