@@ -87,13 +87,24 @@ namespace TresBrujas.Controllers
         // POST: SpellCaster/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(SpellCaster spellCaster)
         {
-            try
-            {
-                // TODO: Add insert logic here
+                    try
+                    {
 
-                return RedirectToAction(nameof(Index));
+
+                        //builds up our new BlogPost using the data submitted from the form, 
+                        //represented here as "BlogPos"
+                        var spells = new SpellCaster()
+                        {
+                            Id = spellCaster.Id,
+                            Name = spellCaster.Name,
+
+                        };
+                        _context.SpellCaster.Add(spells);
+                        await _context.SaveChangesAsync();
+
+                        return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -146,5 +157,7 @@ namespace TresBrujas.Controllers
                 return View();
             }
         }
+
+
     }
 }
