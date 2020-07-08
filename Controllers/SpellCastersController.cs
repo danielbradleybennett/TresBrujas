@@ -75,7 +75,8 @@ namespace TresBrujas.Controllers
         // GET: SpellCaster/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var SpellCaster = GetSpellCasterById(id);
+            return View(SpellCaster);
         }
 
         // GET: SpellCaster/Create
@@ -89,22 +90,22 @@ namespace TresBrujas.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(SpellCaster spellCaster)
         {
-                    try
-                    {
+            try
+            {
 
 
-                        //builds up our new BlogPost using the data submitted from the form, 
-                        //represented here as "BlogPos"
-                        var spells = new SpellCaster()
-                        {
-                            Id = spellCaster.Id,
-                            Name = spellCaster.Name,
+                //builds up our new BlogPost using the data submitted from the form, 
+                //represented here as "BlogPos"
+                var spells = new SpellCaster()
+                {
+                    Id = spellCaster.Id,
+                    Name = spellCaster.Name,
 
-                        };
-                        _context.SpellCaster.Add(spells);
-                        await _context.SaveChangesAsync();
+                };
+                _context.SpellCaster.Add(spells);
+                await _context.SaveChangesAsync();
 
-                        return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -115,6 +116,7 @@ namespace TresBrujas.Controllers
         // GET: SpellCaster/Edit/5
         public ActionResult Edit(int id)
         {
+
             return View();
         }
 
@@ -158,6 +160,42 @@ namespace TresBrujas.Controllers
             }
         }
 
+        private SpellCaster GetSpellCasterById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT s.Id, s.[Name]
+                                      FROM SpellCaster s
+                                      WHERE s.Id = @id";
 
+                    cmd.Parameters.Add(new SqlParameter("@id", id));
+
+                    var reader = cmd.ExecuteReader();
+                    SpellCaster spellCaster = null;
+
+                    while (reader.Read())
+                    {
+                        if (spellCaster == null)
+                        {
+                            spellCaster = new SpellCaster()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+
+                            };
+                        }
+
+                    }
+
+                    reader.Close();
+                    return spellCaster;
+                }
+
+
+            }
+        }
     }
 }
