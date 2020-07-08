@@ -93,7 +93,7 @@ namespace TresBrujas.Controllers
         // POST: Spells/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("Id, Name")] SpellFormViewModel spellFormViewModel)
+        public async Task<ActionResult> Create(SpellFormViewModel spellFormViewModel)
         {
             try
             {

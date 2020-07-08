@@ -325,3 +325,4 @@ C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\TresB
 C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\Razor\Views\Spells\Create.cshtml.g.cs
 C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\Razor\Views\SpellCasters\Index.cshtml.g.cs
 C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\Razor\Views\SpellCasters\Create.cshtml.g.cs
+C:\Users\Daniel\source\repos\TresBrujas\TresBrujas\obj\Debug\netcoreapp3.1\Razor\Views\SpellCasters\Details.cshtml.g.cs
