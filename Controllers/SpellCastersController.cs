@@ -116,22 +116,45 @@ namespace TresBrujas.Controllers
         // GET: SpellCaster/Edit/5
         public ActionResult Edit(int id)
         {
-
-            return View();
+            var spellCaster = GetSpellCasterById(id);
+            var viewModel = new SpellCaster()
+            {
+                Name = spellCaster.Name,
+                Id = spellCaster.Id
+            };
+            return View(viewModel);
         }
 
         // POST: SpellCaster/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, SpellCaster spellCaster)
         {
             try
             {
-                // TODO: Add update logic here
+                using (SqlConnection conn = Connection)
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = @"UPDATE SpellCaster
+                            SET Name = @name,
+                            WHERE Id = @id";
 
-                return RedirectToAction(nameof(Index));
+                        cmd.Parameters.Add(new SqlParameter("@name", spellCaster.Name));
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
+
+                        cmd.ExecuteNonQuery();
+
+
+                    }
+
+                }
+                    return RedirectToAction(nameof(Index));
+
+                
             }
-            catch
+            catch (Exception ex)
             {
                 return View();
             }
