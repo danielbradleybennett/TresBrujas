@@ -125,40 +125,69 @@ namespace TresBrujas.Controllers
             return View(viewModel);
         }
 
-        // POST: SpellCaster/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, SpellCaster spellCaster)
+        public async Task<ActionResult> Edit(int id, SpellCaster spellCaster)
         {
             try
             {
-                using (SqlConnection conn = Connection)
+                var spellCasterToUpdate = new SpellCaster()
                 {
-                    conn.Open();
-                    using (SqlCommand cmd = conn.CreateCommand())
-                    {
-                        cmd.CommandText = @"UPDATE SpellCaster
-                            SET Name = @name,
-                            WHERE Id = @id";
+                    Id = spellCaster.Id,
+                    Name = spellCaster.Name
 
-                        cmd.Parameters.Add(new SqlParameter("@name", spellCaster.Name));
-                        cmd.Parameters.Add(new SqlParameter("@id", id));
+                };
 
-                        cmd.ExecuteNonQuery();
+                _context.SpellCaster.Update(spellCasterToUpdate);
+                await _context.SaveChangesAsync();
 
 
-                    }
-
-                }
-                    return RedirectToAction(nameof(Index));
-
-                
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 return View();
             }
         }
+
+
+
+
+        //Will attempt to make this work later
+        // POST: SpellCaster/Edit/5
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit(int id, SpellCaster spellCaster)
+        //{
+        //    try
+        //    {
+        //        using (SqlConnection conn = Connection)
+        //        {
+        //            conn.Open();
+        //            using (SqlCommand cmd = conn.CreateCommand())
+        //            {
+        //                cmd.CommandText = @"UPDATE SpellCaster
+        //                    SET Name = @name,
+        //                    WHERE Id = @id";
+
+        //                cmd.Parameters.Add(new SqlParameter("@name", spellCaster.Name));
+        //                cmd.Parameters.Add(new SqlParameter("@id", id));
+
+        //                cmd.ExecuteNonQuery();
+
+
+        //            }
+
+        //        }
+        //            return RedirectToAction(nameof(Index));
+
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return View();
+        //    }
+        //}
 
         // GET: SpellCaster/Delete/5
         public ActionResult Delete(int id)
