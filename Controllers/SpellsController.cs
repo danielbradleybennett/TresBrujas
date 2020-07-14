@@ -93,75 +93,79 @@ namespace TresBrujas.Controllers
         // POST: Spells/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(SpellFormViewModel spellFormViewModel)
+        public async Task<ActionResult> Create(SpellFormViewModel spell)
         {
             try
             {
-
-                var user = await GetCurrentUserAsync();
-
-                //builds up our new BlogPost using the data submitted from the form, 
-                //represented here as "BlogPos"
-                var spells = new Spell()
+                using (SqlConnection conn = Connection)
                 {
-                    Id = spellFormViewModel.Id,
-                    Name = spellFormViewModel.Name,
-                    
-                };
-                _context.Spell.Add(spells);
-                await _context.SaveChangesAsync();
+                    conn.Open();
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = @"INSERT INTO Spell(Name)
+                                                OUTPUT INSERTED.Id
+                                                VALUES (@Name)";
 
-                
-
-                //spells.SpellType = spell.SpellTypeOptions.Select(typeId = new SpellType()
-                //{
-                //    Type = spells,
-                //    TypeId = typeId
-                //}).ToList();
+                        cmd.Parameters.Add(new SqlParameter("@Name", spell.Name));
 
 
-                
-                if (spellFormViewModel.SpellTypeId != 0)
-                {
-                    UpdateSpell(spellFormViewModel.Id, spellFormViewModel.SpellTypeId);
+                        var Id = (int)cmd.ExecuteScalar();
+                        spell.Id = Id;
+                        if (spell.SpellTypeId != 0)
+                        {
+                            UpdateSpell(spell.Id, spell.SpellTypeId);
+                        }
+
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
-
-
-                return RedirectToAction(nameof(Index));
-
-
-
-
-                //using(SqlConnection conn = Connection)
-                //{
-                //    conn.Open();
-                //    using(SqlCommand cmd = conn.CreateCommand())
-                //    {
-                //        cmd.CommandText = @"INSERT INTO Spell(Name)
-                //                            OUTPUT INSERTED.Id
-                //                            VALUES (@Name)";
-
-                //        cmd.Parameters.Add(new SqlParameter("@Name", spell.Name));
-
-
-                //        var Id = (int)cmd.ExecuteScalar();
-                //        spell.Id = Id;
-                //        if (spell.SpellTypeId != 0)
-                //        {
-                //            UpdateSpell(spell.Id, spell.SpellTypeId);
-                //        }
-
-                //        return RedirectToAction(nameof(Index));
-                //    }
-                //}
-
-
             }
+
             catch (Exception ex)
             {
                 return View();
             }
         }
+
+
+
+
+
+                //    if (spellFormViewModel.SpellTypeId != 0)
+                //{
+                //    UpdateSpell(spellFormViewModel.Id, spellFormViewModel.SpellTypeId);
+                //}
+
+
+                //return RedirectToAction(nameof(Index));
+
+
+                    //var user = await GetCurrentUserAsync();
+
+                    ////builds up our new BlogPost using the data submitted from the form, 
+                    ////represented here as "BlogPos"
+                    //var spells = new Spell()
+                    //{
+                    //    Id = spellFormViewModel.Id,
+                    //    Name = spellFormViewModel.Name,
+
+                    //};
+                    //_context.Spell.Add(spells);
+                    //await _context.SaveChangesAsync();
+
+
+
+                    //spells.SpellType = spell.SpellTypeOptions.Select(typeId = new SpellType()
+                    //{
+                    //    Type = spells,
+                    //    TypeId = typeId
+                    //}).ToList();
+
+
+               
+
+
+            
 
         // GET: Spells/Edit/5
         public ActionResult Edit(int id)
